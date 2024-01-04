@@ -1,0 +1,107 @@
+SCRIPT PROCEDIMIENTOS ALMACENADOS
+
+-- 1. Procedimiento Almacenado para Crear Usuario (APROBADO)
+
+CREATE PROCEDURE CrearUsuario(
+    IN p_username VARCHAR(255),
+    IN p_email VARCHAR(255),
+    IN p_password VARCHAR(255),
+    IN p_rol TINYINT
+)
+BEGIN
+    INSERT INTO Usuarios (username, email, password, registration_date, rol)
+    VALUES (p_username, p_email, p_password, NOW(), p_rol);
+END //
+
+
+-- 2. Procedimiento Almacenado para Iniciar Sesión (APROBADO)
+
+
+CREATE PROCEDURE LoginUsuario(
+    IN p_username VARCHAR(255),
+    IN p_password VARCHAR(255),
+    OUT p_LoginExitoso BIT
+)
+BEGIN
+    DECLARE user_role TINYINT;
+
+    -- Obtener el rol del usuario
+    SELECT rol INTO user_role
+    FROM Usuarios
+    WHERE username = p_username AND password = p_password AND estado = 'A';
+
+    -- Verificar el rol del usuario
+    IF user_role = 0 THEN
+        -- Usuario con rol 0 (Admin)
+        SET p_LoginExitoso = 1;
+    ELSEIF user_role = 1 THEN
+        -- Usuario con rol 1 (Invitados)
+        SET p_LoginExitoso = 1;
+    ELSE
+        -- Usuario con otro rol o credenciales inválidas
+        SET p_LoginExitoso = 0;
+    END IF;
+END //
+
+
+-- 3. Procedimiento Almacenado para Publicar Mensaje
+CREATE PROCEDURE PublicarMensaje(
+    IN p_user_id INT,
+    IN p_content TEXT
+)
+BEGIN
+    INSERT INTO Mensajes (user_id, content, publish_date)
+    VALUES (p_user_id, p_content, NOW());
+END //
+
+-- 4. Procedimiento Almacenado para Agregar Amigo
+CREATE PROCEDURE AgregarAmigo(
+    IN p_user_id INT,
+    IN p_friend_id INT
+)
+BEGIN
+    INSERT INTO Amigos (user_id, friend_id)
+    VALUES (p_user_id, p_friend_id);
+    INSERT INTO Amigos (user_id, friend_id)
+    VALUES (p_friend_id, p_user_id); -- Considerando una relación bidireccional
+END //
+
+-- 5. Procedimiento Almacenado para Enviar Solicitud de Amistad
+CREATE PROCEDURE EnviarSolicitudAmistad(
+    IN p_sender_id INT,
+    IN p_receiver_id INT
+)
+BEGIN
+    INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
+    VALUES (p_sender_id, p_receiver_id, 'pendiente');
+END //
+
+-- 6. Procedimiento Almacenado para Comentar Mensaje
+CREATE PROCEDURE ComentarMensaje(
+    IN p_message_id INT,
+    IN p_user_id INT,
+    IN p_content TEXT
+)
+BEGIN
+    INSERT INTO Comentarios (message_id, user_id, content, comment_date)
+    VALUES (p_message_id, p_user_id, p_content, NOW());
+END //
+
+-- 7. Procedimiento Almacenado para Obtener Mensajes del Foro
+CREATE PROCEDURE ObtenerMensajesForo()
+BEGIN
+    SELECT * FROM Mensajes;
+END //
+
+-- 8. Procedimiento Almacenado para Obtener Mensajes de un Usuario
+CREATE PROCEDURE ObtenerMensajesUsuario(
+    IN p_user_id INT
+)
+BEGIN
+    SELECT *
+    FROM Mensajes
+    WHERE user_id = p_user_id;
+END //
+
+-- Restaurar el delimitador
+DELIMITER ;

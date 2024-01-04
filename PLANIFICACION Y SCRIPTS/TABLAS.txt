@@ -1,0 +1,80 @@
+SCRIPT TABLAS
+
+-- Crear la tabla de Usuarios
+
+CREATE TABLE Usuarios (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) UNIQUE,
+    email VARCHAR(255) UNIQUE,
+    password VARCHAR(255),
+    registration_date TIMESTAMP,
+    estado CHAR(1) DEFAULT 'A' -- Puedes definir un valor predeterminado ('A' por ejemplo)
+	rol TINYINT(1)
+);
+
+
+-- Crear la tabla de Perfiles
+CREATE TABLE Perfiles (
+    profile_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNIQUE,
+    profile_picture VARCHAR(255),
+    privacy_settings VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES Usuarios(user_id)
+);
+
+-- Crear la tabla de Mensajes
+CREATE TABLE Mensajes (
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    content TEXT,
+    publish_date TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Usuarios(user_id)
+);
+
+-- Crear la tabla de Amigos (Relación de Amistad)
+CREATE TABLE Amigos (
+    friendship_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    friend_id INT,
+    FOREIGN KEY (user_id) REFERENCES Usuarios(user_id),
+    FOREIGN KEY (friend_id) REFERENCES Usuarios(user_id)
+);
+
+-- Crear la tabla de Solicitudes de Amistad
+CREATE TABLE Solicitudes_Amistad (
+    request_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT,
+    receiver_id INT,
+    status VARCHAR(255),
+    FOREIGN KEY (sender_id) REFERENCES Usuarios(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES Usuarios(user_id)
+);
+
+-- Crear la tabla de Comentarios
+CREATE TABLE Comentarios (
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    message_id INT,
+    user_id INT,
+    content TEXT,
+    comment_date TIMESTAMP,
+    FOREIGN KEY (message_id) REFERENCES Mensajes(message_id),
+    FOREIGN KEY (user_id) REFERENCES Usuarios(user_id)
+);
+
+-- Crear la tabla de Tokens de Sesión
+CREATE TABLE Tokens_Sesion (
+    token_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    token VARCHAR(255),
+    expiration_date TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Usuarios(user_id)
+);
+
+-- Crear la tabla de Registros de Acceso
+CREATE TABLE Registros_Acceso (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    ip_address VARCHAR(255),
+    login_date TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Usuarios(user_id)
+);

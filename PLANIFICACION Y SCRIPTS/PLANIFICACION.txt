@@ -1,0 +1,193 @@
+1. Planificación:
+Definir Requisitos:
+
+Identificar las funciones clave: registro de usuarios, inicio de sesión, perfiles, foro de mensajes, etc.
+Establecer requisitos de seguridad y tolerancia a fallos.
+Alcance del Proyecto:
+
+Determinar qué funcionalidades específicas estarán presentes en la versión inicial.
+Identificar posibles características futuras.
+Cronograma:
+
+Establecer fechas límite para cada fase del proyecto.
+Asignar tareas a los miembros del equipo si es un proyecto colaborativo.
+
+2. Diseño:
+Arquitectura de la Aplicación:
+
+Decidir la arquitectura (cliente-servidor, monolítica, microservicios, etc.).
+Diseñar la base de datos para almacenar perfiles de usuario y mensajes del foro.
+Diseño de Interfaz de Usuario (UI):
+
+Crear wireframes y prototipos para la interfaz de usuario.
+Asegurarse de que la interfaz sea intuitiva y fácil de usar.
+
+3. Implementación:
+Registro e Inicio de Sesión:
+
+Implementar un sistema de registro y autenticación seguros.
+Crear páginas para que los usuarios vean y editen sus perfiles.
+Foro de Mensajes:
+
+Desarrollar un sistema de publicación de mensajes.
+Implementar la capacidad de ver y comentar en mensajes de otros usuarios.
+Conexiones entre Usuarios:
+
+Agregar funcionalidades que permitan a los usuarios conectarse entre sí (amistades, seguir, etc.).
+Seguridad:
+
+Validar y sanitizar todos los datos de entrada.
+Utilizar HTTPS para la seguridad de la comunicación.
+Implementar medidas de seguridad contra ataques comunes (inyecciones SQL, XSS, CSRF).
+
+4. Documentación:
+Documentación de Diseño:
+
+Describir la arquitectura y los componentes clave de la aplicación.
+Documentación de Código:
+
+Comentar el código de manera clara y significativa.
+Proporcionar instrucciones sobre cómo configurar el entorno de desarrollo.
+Documentación de Usuario:
+
+Crear manuales de usuario que expliquen cómo utilizar la aplicación.
+Proporcionar información de contacto para el soporte técnico.
+
+5. Herramientas de Gestión de Código Fuente:
+Utilizar un sistema de control de versiones como Git.
+Hospedar el repositorio en una plataforma como GitHub o GitLab.
+Asegurarse de que el equipo siga buenas prácticas de colaboración con Git.
+
+6. Pruebas:
+Realizar pruebas unitarias y de integración.
+Ejecutar pruebas de seguridad y pruebas de carga.
+Solucionar cualquier problema identificado durante las pruebas.
+
+TABLAS 
+
+Usuarios:
+
+user_id: INT (clave primaria, autoincremental)
+username: VARCHAR(n) (nombre de usuario único, n es la longitud máxima)
+email: VARCHAR(n) (correo electrónico único, n es la longitud máxima)
+password: VARCHAR(n) (contraseña cifrada, n es la longitud máxima)
+registration_date: TIMESTAMP (fecha y hora de registro)
+
+Perfiles:
+
+profile_id: INT (clave primaria, autoincremental)
+user_id: INT (clave foránea que referencia a la tabla de Usuarios)
+profile_picture: VARCHAR(n) (ruta o referencia a la foto de perfil, n es la longitud máxima)
+privacy_settings: VARCHAR(n) (configuraciones de privacidad, n es la longitud máxima)
+Otros campos según la información adicional necesaria.
+
+Mensajes:
+
+message_id: INT (clave primaria, autoincremental)
+user_id: INT (clave foránea que referencia a la tabla de Usuarios)
+content: TEXT (contenido del mensaje)
+publish_date: TIMESTAMP (fecha de publicación)
+
+Amigos:
+
+friendship_id: INT (clave primaria, autoincremental)
+user_id: INT (clave foránea que referencia a la tabla de Usuarios)
+friend_id: INT (clave foránea que referencia a la tabla de Usuarios para el amigo)
+
+Solicitudes de Amistad:
+
+request_id: INT (clave primaria, autoincremental)
+sender_id: INT (clave foránea que referencia a la tabla de Usuarios, quien envía la solicitud)
+receiver_id: INT (clave foránea que referencia a la tabla de Usuarios, quien recibe la solicitud)
+status: VARCHAR(n) (pendiente, aceptada, rechazada, n es la longitud máxima)
+
+Comentarios:
+
+comment_id: INT (clave primaria, autoincremental)
+message_id: INT (clave foránea que referencia a la tabla de Mensajes)
+user_id: INT (clave foránea que referencia a la tabla de Usuarios)
+content: TEXT (contenido del comentario)
+comment_date: TIMESTAMP (fecha del comentario)
+
+Tokens de Sesión:
+
+token_id: INT (clave primaria, autoincremental)
+user_id: INT (clave foránea que referencia a la tabla de Usuarios)
+token: VARCHAR(n) (valor único del token de sesión, n es la longitud máxima)
+expiration_date: TIMESTAMP (fecha de caducidad del token)
+
+Registros de Acceso:
+
+log_id: INT (clave primaria, autoincremental)
+user_id: INT (clave foránea que referencia a la tabla de Usuarios)
+ip_address: VARCHAR(n) (dirección IP del acceso, n es la longitud máxima)
+login_date: TIMESTAMP (fecha y hora del inicio de sesión)
+
+RELACIONES 
+
+Usuarios y Perfiles:
+
+Relación Uno a Uno (One-to-One): Un usuario tiene un perfil, y un perfil pertenece a un único usuario.
+Clave foránea: user_id en la tabla de Perfiles que referencia a la clave primaria user_id en la tabla de Usuarios.
+
+Usuarios y Mensajes:
+
+Relación Uno a Muchos (One-to-Many): Un usuario puede tener varios mensajes, pero un mensaje pertenece a un único usuario.
+Clave foránea: user_id en la tabla de Mensajes que referencia a la clave primaria user_id en la tabla de Usuarios.
+
+Usuarios y Amigos (Relación de Amistad):
+
+Relación Muchos a Muchos (Many-to-Many): Un usuario puede tener muchos amigos, y un amigo puede ser amigo de muchos usuarios.
+Se necesita una tabla intermedia: Amigos con claves foráneas user_id y friend_id que referencia a la clave primaria user_id en la tabla de Usuarios.
+
+Usuarios y Solicitudes de Amistad:
+
+Relación Muchos a Muchos (Many-to-Many): Un usuario puede enviar muchas solicitudes de amistad, y también puede recibir muchas solicitudes.
+Se necesita una tabla intermedia: Solicitudes_Amistad con claves foráneas sender_id y receiver_id que referencia a la clave primaria user_id en la tabla de Usuarios.
+
+Mensajes y Comentarios:
+
+Relación Uno a Muchos (One-to-Many): Un mensaje puede tener varios comentarios, pero un comentario pertenece a un único mensaje.
+Clave foránea: message_id en la tabla de Comentarios que referencia a la clave primaria message_id en la tabla de Mensajes.
+
+Usuarios y Tokens de Sesión:
+
+Relación Uno a Muchos (One-to-Many): Un usuario puede tener varios tokens de sesión, pero un token pertenece a un único usuario.
+Clave foránea: user_id en la tabla de Tokens_Sesion que referencia a la clave primaria user_id en la tabla de Usuarios.
+
+
+METODOS
+
+1. Crear Usuario:
+
+Procedimiento almacenado para registrar nuevos usuarios en la base de datos, que podría incluir la lógica de validación de datos y la generación de tokens de autenticación.
+
+2. Iniciar Sesión:
+
+Procedimiento almacenado para autenticar a los usuarios al iniciar sesión, verificando las credenciales y generando un token de sesión.
+
+3. Publicar Mensaje:
+
+Procedimiento almacenado para permitir a los usuarios publicar mensajes en el foro, gestionando la creación de nuevos mensajes y su asociación con el usuario correspondiente.
+
+4. Agregar Amigo:
+
+Procedimiento almacenado para manejar la lógica de enviar y aceptar solicitudes de amistad, y actualizar la tabla de amigos en consecuencia.
+
+5. Enviar Solicitud de Amistad:
+
+Procedimiento almacenado para enviar solicitudes de amistad entre usuarios.
+
+6. Comentar Mensaje:
+
+Procedimiento almacenado para permitir a los usuarios comentar en los mensajes del foro, gestionando la creación de nuevos comentarios y su asociación con el usuario y el mensaje correspondientes.
+
+7. Obtener Mensajes del Foro:
+
+Procedimiento almacenado para recuperar mensajes del foro, posiblemente con opciones para filtrar, ordenar y paginar los resultados.
+
+8. Gestionar Sesiones:
+
+Procedimiento almacenado para verificar y gestionar la validez de los tokens de sesión, asegurando que los usuarios estén autenticados correctamente.
+
+
