@@ -102,6 +102,3 @@ BEGIN
     FROM Mensajes
     WHERE user_id = p_user_id;
 END //
-
--- Restaurar el delimitador
-DELIMITER ;
