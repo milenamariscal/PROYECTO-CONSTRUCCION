@@ -76,6 +76,56 @@ BEGIN
     VALUES (p_sender_id, p_receiver_id, 'pendiente');
 END //
 
+-------------------------------------------------------------
+DELIMITER //
+
+CREATE PROCEDURE EnviarSolicitudAmistad(
+    IN p_sender_id INT,
+    IN p_receiver_id INT
+)
+BEGIN
+    -- Insertar la solicitud de amistad con estado 'pendiente'
+    INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
+    VALUES (p_sender_id, p_receiver_id, 'pendiente');
+END //
+
+DELIMITER ;
+
+////////////////////////////////
+
+DELIMITER //
+
+CREATE PROCEDURE AceptarSolicitudAmistad(
+    IN p_request_id INT
+)
+BEGIN
+    DECLARE sender_user_id INT;
+    DECLARE receiver_user_id INT;
+
+    -- Obtener el sender_id y receiver_id de la solicitud
+    SELECT sender_id, receiver_id
+    INTO sender_user_id, receiver_user_id
+    FROM Solicitudes_Amistad
+    WHERE request_id = p_request_id;
+
+    -- Actualizar el estado de la solicitud a 'aceptado'
+    UPDATE Solicitudes_Amistad
+    SET status = 'aceptado'
+    WHERE request_id = p_request_id;
+
+    -- Insertar la relación de amistad en la tabla Amigos
+    INSERT INTO Amigos (user_id, friend_id)
+    VALUES (sender_user_id, receiver_user_id);
+
+    -- Puedes agregar la inversa también si quieres (opcional)
+    -- INSERT INTO Amigos (user_id, friend_id)
+    -- VALUES (receiver_user_id, sender_user_id);
+END //
+
+DELIMITER ;
+
+-------------------------------------------------------------
+
 -- 6. Procedimiento Almacenado para Comentar Mensaje
 CREATE PROCEDURE ComentarMensaje(
     IN p_message_id INT,
