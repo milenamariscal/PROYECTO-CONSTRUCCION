@@ -8,8 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 /**
  *
@@ -64,8 +62,6 @@ public class CD_Usuario {
             }
         }
     }
-
- 
 
     public boolean loginUsuario(String username, String password) {
         Connection conexion = ConexionBD.obtenerConexion();
@@ -247,6 +243,41 @@ public class CD_Usuario {
             }
         }
     }
+    
+    public void obtenerMensajesDeUsuario(int user_id) {
+        Connection conexion = ConexionBD.obtenerConexion();
+        CallableStatement cst = null;
+        ResultSet rs = null;
+
+        try {
+            String sqlQuery = "{CALL ObtenerMensajesUsuario(?)}";
+            cst = conexion.prepareCall(sqlQuery);
+            cst.setInt(1, user_id);
+            rs = cst.executeQuery();
+            while (rs.next()) {
+                int messageId = rs.getInt("message_id");
+                int userId = rs.getInt("user_id");
+                String content = rs.getString("content");
+
+                System.out.println("Message ID: " + messageId + ", User ID: " + userId + ", Content: " + content);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener mensajes del usuario: " + e.getMessage());
+        } finally {
+            try {
+                if (cst != null) {
+                    cst.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+                ConexionBD.cerrarConexion();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
+    }   
     
 }
 

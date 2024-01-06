@@ -24,8 +24,8 @@ public class Principal {
         //usuario.loginUsuario("john_doe", "password123");
         
         
-         //Llamar al metodo EnviarSolicitud yAceptarSolicitud 
-         // Enviar solicitud de amistad
+        //Llamar al metodo EnviarSolicitud yAceptarSolicitud 
+        // Enviar solicitud de amistad
         //usuario.enviarSolicitudAmistad(2, 3);
 
         // Aceptar solicitud de amistad (suponiendo que ya hay una solicitud pendiente)
@@ -39,7 +39,10 @@ public class Principal {
         //usuario.comentarMensaje(1, 3, "Contestacion del mensaje de prueba");
         
         //Llamar al metodo ObtenerMensajesForo con valores de ejemplo
-        usuario.obtenerMensajesForo();
+        //usuario.obtenerMensajesForo();
+        
+        //Llamar al metodo ObtenerMensajesUsuarios con valores de ejemplo
+        usuario.obtenerMensajesDeUsuario(3);
     }
     
 }
