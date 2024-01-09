@@ -95,8 +95,13 @@ public class CN_Usuario {
     
     //Llamado del metodo RegistrarUsuario
     
-    public void crearUsuario(String nombres, String apellidos, String password, String email, String username){
-        cdUsuario.crearUsuario(nombres, apellidos, username, email, password);
+    public void crearUsuario(String nombre, String apellido, String password, String email, String username){
+        cdUsuario.crearUsuario(nombre, apellido, username, email, password);
+    }
+    
+    public void loginUsuario(String username, String password){
+        cdUsuario.loginUsuario(username, password);
+        
     }
 }
        

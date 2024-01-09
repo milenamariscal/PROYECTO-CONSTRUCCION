@@ -18,32 +18,25 @@ END //
 
 -- 2. Procedimiento Almacenado para Iniciar Sesión (APROBADO)
 
-
 CREATE PROCEDURE LoginUsuario(
     IN p_username VARCHAR(255),
     IN p_password VARCHAR(255),
     OUT p_LoginExitoso BIT
 )
 BEGIN
-    DECLARE user_role TINYINT;
+    -- Inicializar la variable de salida
+    SET p_LoginExitoso = 0;
 
-    -- Obtener el rol del usuario
-    SELECT rol INTO user_role
-    FROM Usuarios
-    WHERE username = p_username AND password = p_password AND estado = 'A';
-
-    -- Verificar el rol del usuario
-    IF user_role = 0 THEN
-        -- Usuario con rol 0 (Admin)
+    -- Verificar si las credenciales son válidas
+    IF EXISTS (
+        SELECT 1
+        FROM Usuarios
+        WHERE username = p_username AND password = p_password AND estado = 'A'
+    ) THEN
+        -- Las credenciales son válidas
         SET p_LoginExitoso = 1;
-    ELSEIF user_role = 1 THEN
-        -- Usuario con rol 1 (Invitados)
-        SET p_LoginExitoso = 1;
-    ELSE
-        -- Usuario con otro rol o credenciales inválidas
-        SET p_LoginExitoso = 0;
     END IF;
-END //
+END;
 
 
 -- 3. Procedimiento Almacenado para Publicar Mensaje
