@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
  */
 public class CD_Usuario {
     
-    public void crearUsuario(String username, String email, String password, int rol) {
+    public void crearUsuario(String nombre, String apellido, String username, String email, String password) {
         // Obtener una conexión a la base de datos
         Connection conexion = ConexionBD.obtenerConexion();
         
@@ -23,17 +23,19 @@ public class CD_Usuario {
         PreparedStatement pst = null;
 
         try {
-            // Definir la consulta SQL con un procedimiento almacenado llamado "InsertarUsuario"
-            String sqlQuery = "CALL CrearUsuario(?, ?, ?, ?)";
+            // Definir la consulta SQL con un procedimiento almacenado llamado "crearUsuario"
+            String sqlQuery = "CALL CrearUsuario(?, ?, ?, ?, ?)";
             
             // Preparar la consulta con la conexión establecida
             pst = conexion.prepareStatement(sqlQuery);
 
             // Asignarle los parámetros a la consulta
+            
             pst.setString(1, username);
             pst.setString(2, email);
             pst.setString(3, password);
-            pst.setInt(4, rol);
+            pst.setString(4, nombre);
+            pst.setString(5, apellido);
 
 
 

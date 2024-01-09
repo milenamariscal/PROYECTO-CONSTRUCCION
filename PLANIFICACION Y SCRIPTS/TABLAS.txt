@@ -8,8 +8,10 @@ CREATE TABLE Usuarios (
     email VARCHAR(255) UNIQUE,
     password VARCHAR(255),
     registration_date TIMESTAMP,
-    estado CHAR(1) DEFAULT 'A' -- Puedes definir un valor predeterminado ('A' por ejemplo)
-	rol TINYINT(1)
+    estado CHAR(1) DEFAULT 'A' -- Puedes definir un valor predeterminado ('A' por ejemplo),
+	nombre VARCHAR(255) UNIQUE,
+	apellido VARCHAR(255) UNIQUE
+	
 );
 
 

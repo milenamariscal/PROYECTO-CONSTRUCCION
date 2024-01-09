@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 package CapaDatos;
+import CapaPresentacion.FrmRegistrodeusuario;
 
 /**
  *
@@ -42,7 +43,12 @@ public class Principal {
         //usuario.obtenerMensajesForo();
         
         //Llamar al metodo ObtenerMensajesUsuarios con valores de ejemplo
-        usuario.obtenerMensajesDeUsuario(3);
+        //usuario.obtenerMensajesDeUsuario(3);
+        
+        FrmRegistrodeusuario prueba = new FrmRegistrodeusuario();
+        prueba.setVisible(true);
+        
+        
     }
     
 }
