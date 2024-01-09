@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-01-2024 a las 22:38:03
+-- Tiempo de generación: 09-01-2024 a las 05:37:26
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -25,11 +25,28 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AgregarAmigo` (IN `p_user_id` INT, IN `p_friend_id` INT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AceptarSolicitudAmistad` (IN `p_request_id` INT)   BEGIN
+    DECLARE sender_user_id INT;
+    DECLARE receiver_user_id INT;
+
+    -- Obtener el sender_id y receiver_id de la solicitud
+    SELECT sender_id, receiver_id
+    INTO sender_user_id, receiver_user_id
+    FROM Solicitudes_Amistad
+    WHERE request_id = p_request_id;
+
+    -- Actualizar el estado de la solicitud a 'aceptado'
+    UPDATE Solicitudes_Amistad
+    SET status = 'aceptado'
+    WHERE request_id = p_request_id;
+
+    -- Insertar la relación de amistad en la tabla Amigos
     INSERT INTO Amigos (user_id, friend_id)
-    VALUES (p_user_id, p_friend_id);
-    INSERT INTO Amigos (user_id, friend_id)
-    VALUES (p_friend_id, p_user_id); -- Considerando una relación bidireccional
+    VALUES (sender_user_id, receiver_user_id);
+
+    -- Puedes agregar la inversa también si quieres (opcional)
+    -- INSERT INTO Amigos (user_id, friend_id)
+    -- VALUES (receiver_user_id, sender_user_id);
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ComentarMensaje` (IN `p_message_id` INT, IN `p_user_id` INT, IN `p_content` TEXT)   BEGIN
@@ -37,34 +54,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ComentarMensaje` (IN `p_message_id`
     VALUES (p_message_id, p_user_id, p_content, NOW());
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CrearUsuario` (IN `p_username` VARCHAR(255), IN `p_email` VARCHAR(255), IN `p_password` VARCHAR(255), IN `p_rol` TINYINT)   BEGIN
-    INSERT INTO Usuarios (username, email, password, registration_date, rol)
-    VALUES (p_username, p_email, p_password, NOW(), p_rol);
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CrearUsuario` (IN `p_username` VARCHAR(255), IN `p_email` VARCHAR(255), IN `p_password` VARCHAR(255), IN `p_nombres` VARCHAR(255), IN `p_apellidos` VARCHAR(255))   BEGIN
+    INSERT INTO Usuarios (username, email, password, registration_date, nombre, apellido)
+    VALUES (p_username, p_email, p_password, NOW(), p_nombres, p_apellidos);
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EnviarSolicitudAmistad` (IN `p_sender_id` INT, IN `p_receiver_id` INT)   BEGIN
+    -- Insertar la solicitud de amistad con estado 'pendiente'
     INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
     VALUES (p_sender_id, p_receiver_id, 'pendiente');
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LoginUsuario` (IN `p_username` VARCHAR(255), IN `p_password` VARCHAR(255), OUT `p_LoginExitoso` BIT)   BEGIN
-    DECLARE user_role TINYINT;
+    -- Inicializar la variable de salida
+    SET p_LoginExitoso = 0;
 
-    -- Obtener el rol del usuario
-    SELECT rol INTO user_role
-    FROM Usuarios
-    WHERE username = p_username AND password = p_password AND estado = 'A';
-
-    -- Verificar el rol del usuario
-    IF user_role = 0 THEN
-        -- Usuario con rol 0 (Admin)
+    -- Verificar si las credenciales son válidas
+    IF EXISTS (
+        SELECT 1
+        FROM Usuarios
+        WHERE username = p_username AND password = p_password AND estado = 'A'
+    ) THEN
+        -- Las credenciales son válidas
         SET p_LoginExitoso = 1;
-    ELSEIF user_role = 1 THEN
-        -- Usuario con rol 1 (Invitados)
-        SET p_LoginExitoso = 1;
-    ELSE
-        -- Usuario con otro rol o credenciales inválidas
-        SET p_LoginExitoso = 0;
     END IF;
 END$$
 
@@ -97,6 +109,17 @@ CREATE TABLE `amigos` (
   `friend_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `amigos`
+--
+
+INSERT INTO `amigos` (`friendship_id`, `user_id`, `friend_id`) VALUES
+(1, NULL, NULL),
+(2, NULL, NULL),
+(3, NULL, NULL),
+(4, NULL, NULL),
+(5, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -111,6 +134,13 @@ CREATE TABLE `comentarios` (
   `comment_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `comentarios`
+--
+
+INSERT INTO `comentarios` (`comment_id`, `message_id`, `user_id`, `content`, `comment_date`) VALUES
+(1, 1, 3, 'Contestacion del mensaje de prueba', '2024-01-05 23:20:25');
+
 -- --------------------------------------------------------
 
 --
@@ -123,6 +153,13 @@ CREATE TABLE `mensajes` (
   `content` text DEFAULT NULL,
   `publish_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `mensajes`
+--
+
+INSERT INTO `mensajes` (`message_id`, `user_id`, `content`, `publish_date`) VALUES
+(1, 3, 'Este es un mensaje de prueba', '2024-01-05 23:12:47');
 
 -- --------------------------------------------------------
 
@@ -163,6 +200,13 @@ CREATE TABLE `solicitudes_amistad` (
   `status` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `solicitudes_amistad`
+--
+
+INSERT INTO `solicitudes_amistad` (`request_id`, `sender_id`, `receiver_id`, `status`) VALUES
+(5, 2, 3, 'pendiente');
+
 -- --------------------------------------------------------
 
 --
@@ -189,15 +233,18 @@ CREATE TABLE `usuarios` (
   `password` varchar(255) DEFAULT NULL,
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `estado` char(1) DEFAULT 'A',
-  `rol` tinyint(1) DEFAULT NULL
+  `nombre` varchar(255) DEFAULT NULL,
+  `apellido` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`user_id`, `username`, `email`, `password`, `registration_date`, `estado`, `rol`) VALUES
-(2, 'john_doe', 'john.doe@example.com', 'password123', '2024-01-04 05:53:25', 'A', 1);
+INSERT INTO `usuarios` (`user_id`, `username`, `email`, `password`, `registration_date`, `estado`, `nombre`, `apellido`) VALUES
+(2, 'john_doe', 'john.doe@example.com', 'password123', '2024-01-06 18:59:09', 'A', 'Luis', 'Pilco'),
+(3, 'milena_mariscal', 'mileena@example.com', 'password321', '2024-01-06 18:59:09', 'A', 'Patricia', 'Ponce'),
+(4, 'gdfgfd', 'gdfgdfgdfg', 'gfdgfdgd', '2024-01-09 03:30:08', 'A', 'gfdgdf', 'gfdgdfg');
 
 --
 -- Índices para tablas volcadas
@@ -271,19 +318,19 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `amigos`
 --
 ALTER TABLE `amigos`
-  MODIFY `friendship_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `friendship_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
 --
 ALTER TABLE `mensajes`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `perfiles`
@@ -301,7 +348,7 @@ ALTER TABLE `registros_acceso`
 -- AUTO_INCREMENT de la tabla `solicitudes_amistad`
 --
 ALTER TABLE `solicitudes_amistad`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tokens_sesion`
@@ -313,7 +360,7 @@ ALTER TABLE `tokens_sesion`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
