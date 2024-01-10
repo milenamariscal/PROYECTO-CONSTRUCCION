@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-01-2024 a las 05:37:26
+-- Tiempo de generación: 10-01-2024 a las 08:05:09
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -77,6 +77,26 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `LoginUsuario` (IN `p_username` VARC
     ) THEN
         -- Las credenciales son válidas
         SET p_LoginExitoso = 1;
+    END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ObtenerDatosUsuario` (IN `p_input_username` VARCHAR(255), OUT `p_output_username` VARCHAR(255), OUT `p_nombre` VARCHAR(255), OUT `p_apellido` VARCHAR(255))   BEGIN
+    -- Inicializar las variables de salida
+    SET p_output_username = NULL;
+    SET p_nombre = NULL;
+    SET p_apellido = NULL;
+
+    -- Verificar si el usuario existe
+    IF EXISTS (
+        SELECT 1
+        FROM Usuarios
+        WHERE username = p_input_username
+    ) THEN
+        -- Obtener los datos del usuario
+        SELECT username, nombre, apellido
+        INTO p_output_username, p_nombre, p_apellido
+        FROM Usuarios
+        WHERE username = p_input_username;
     END IF;
 END$$
 
