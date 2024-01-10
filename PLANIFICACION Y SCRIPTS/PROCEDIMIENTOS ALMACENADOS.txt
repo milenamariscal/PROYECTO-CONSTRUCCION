@@ -147,3 +147,33 @@ BEGIN
     FROM Mensajes
     WHERE user_id = p_user_id;
 END //
+
+--9. Procedimiento Almacenado para ObtenerDatosUsuarios
+
+CREATE PROCEDURE ObtenerDatosUsuario(
+    IN p_input_username VARCHAR(255),
+    OUT p_output_username VARCHAR(255),
+    OUT p_nombre VARCHAR(255),
+    OUT p_apellido VARCHAR(255)
+)
+BEGIN
+    -- Inicializar las variables de salida
+    SET p_output_username = NULL;
+    SET p_nombre = NULL;
+    SET p_apellido = NULL;
+
+    -- Verificar si el usuario existe
+    IF EXISTS (
+        SELECT 1
+        FROM Usuarios
+        WHERE username = p_input_username
+    ) THEN
+        -- Obtener los datos del usuario
+        SELECT username, nombre, apellido
+        INTO p_output_username, p_nombre, p_apellido
+        FROM Usuarios
+        WHERE username = p_input_username;
+    END IF;
+END //
+
+

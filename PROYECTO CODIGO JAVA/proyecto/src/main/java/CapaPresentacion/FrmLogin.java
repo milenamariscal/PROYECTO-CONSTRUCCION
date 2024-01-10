@@ -18,6 +18,8 @@ public class FrmLogin extends javax.swing.JFrame {
      */
     public FrmLogin() {
         initComponents();
+        
+     
     }
 
     /**
@@ -170,7 +172,7 @@ public class FrmLogin extends javax.swing.JFrame {
         
         try{
             usuario.loginUsuario(username, password);
-            FrmPerfil perfil = new FrmPerfil();
+            FrmPerfil perfil = new FrmPerfil(username);
             perfil.setVisible(true);
             
         }catch (Exception ex){

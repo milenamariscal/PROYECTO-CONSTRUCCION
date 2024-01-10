@@ -7,12 +7,14 @@ CapaPresentacion\FrmCrearPost.class
 CapaNegocio\CN_Usuario.class
 CapaPresentacion\FrmLogin$1.class
 CapaDatos\CD_Usuario.class
+CapaPresentacion\FrmEnvioSolicitudes.class
 CapaPresentacion\FrmLogin$2.class
 CapaPresentacion\FrmLogin.class
+CapaPresentacion\FrmEnvioSolicitudes$1.class
 CapaDatos\Principal.class
 CapaPresentacion\FrmPerfil.class
 CapaPresentacion\FrmPortada.class
-CapaPresentacion\FrmPerfil$1.class
+CapaPresentacion\FrmEnvioSolicitudes$2.class
 CapaPresentacion\ingresoalbolg$2.class
 CapaPresentacion\FrmRegistrodeusuario.class
 CapaPresentacion\ingresoalbolg.class

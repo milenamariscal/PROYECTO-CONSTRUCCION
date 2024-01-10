@@ -3,12 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package CapaDatos;
+
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JOptionPane;
+
+
 /**
  *
  * @author Ena
@@ -106,6 +114,50 @@ public class CD_Usuario {
             }
         }
     }
+    
+    public String[] obtenerDatosUsuario(String inputUsername) {
+        Connection conexion = ConexionBD.obtenerConexion();
+        CallableStatement cst = null;
+
+        try {
+            String sqlQuery = "{CALL ObtenerDatosUsuario(?, ?, ?, ?)}";
+            cst = conexion.prepareCall(sqlQuery);
+
+            // Asignarle los parámetros
+            cst.setString(1, inputUsername);
+            cst.registerOutParameter(2, Types.VARCHAR); // Para el username de salida
+            cst.registerOutParameter(3, Types.VARCHAR); // Para el nombre de salida
+            cst.registerOutParameter(4, Types.VARCHAR); // Para el apellido de salida
+
+            // Ejecutar la llamada al procedimiento almacenado
+            cst.execute();
+
+            String outputUsername = cst.getString(2);
+            String nombre = cst.getString(3);
+            String apellido = cst.getString(4);
+
+            if (outputUsername != null) {
+                return new String[]{outputUsername, nombre, apellido};
+            } else {
+                return null; // Usuario no encontrado
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener datos del usuario: " + e.getMessage());
+            return null;
+        } finally {
+            try {
+                if (cst != null) {
+                    cst.close();
+                }
+                ConexionBD.cerrarConexion();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
+    }
+
+
 
     public boolean enviarSolicitudAmistad(int senderId, int receiverId) {
         Connection conexion = ConexionBD.obtenerConexion();

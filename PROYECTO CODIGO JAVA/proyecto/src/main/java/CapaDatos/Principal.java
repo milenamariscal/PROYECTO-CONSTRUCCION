@@ -48,11 +48,12 @@ public class Principal {
         //FrmRegistrodeusuario prueba = new FrmRegistrodeusuario();
         //prueba.setVisible(true);
         
-        FrmLogin prueba = new FrmLogin();
+        //FrmLogin prueba = new FrmLogin();
+        //prueba.setVisible(true);
+        
+        FrmEnvioSolicitudes prueba = new FrmEnvioSolicitudes();
         prueba.setVisible(true);
-        
-        
-        
+    
         
     }
     

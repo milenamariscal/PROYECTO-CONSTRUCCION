@@ -4,6 +4,7 @@
  */
 package CapaNegocio;
 import CapaDatos.CD_Usuario;
+import java.util.List;
 
 /**
  *
@@ -102,6 +103,10 @@ public class CN_Usuario {
     public void loginUsuario(String username, String password){
         cdUsuario.loginUsuario(username, password);
         
+    }
+    
+     public String[] obtenerDatosUsuario(String inputUsername) {
+        return cdUsuario.obtenerDatosUsuario(inputUsername);
     }
 }
        
