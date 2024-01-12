@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-01-2024 a las 08:05:09
+-- Tiempo de generación: 12-01-2024 a las 05:00:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -60,9 +60,19 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CrearUsuario` (IN `p_username` VARC
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `EnviarSolicitudAmistad` (IN `p_sender_id` INT, IN `p_receiver_id` INT)   BEGIN
-    -- Insertar la solicitud de amistad con estado 'pendiente'
-    INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
-    VALUES (p_sender_id, p_receiver_id, 'pendiente');
+    DECLARE v_status VARCHAR(255);  -- Declarar variable para el estado de la solicitud
+
+    -- Verificar si ya existe una solicitud pendiente entre los usuarios
+    SELECT status INTO v_status
+    FROM Solicitudes_Amistad
+    WHERE (sender_id = p_sender_id AND receiver_id = p_receiver_id)
+       OR (sender_id = p_receiver_id AND receiver_id = p_sender_id);
+
+    -- Si no existe, insertar una nueva solicitud
+    IF v_status IS NULL THEN
+        INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
+        VALUES (p_sender_id, p_receiver_id, 'pendiente');
+    END IF;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LoginUsuario` (IN `p_username` VARCHAR(255), IN `p_password` VARCHAR(255), OUT `p_LoginExitoso` BIT)   BEGIN

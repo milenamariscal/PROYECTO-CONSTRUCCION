@@ -62,16 +62,6 @@ BEGIN
 END //
 
 -- 5. Procedimiento Almacenado para Enviar Solicitud de Amistad
-CREATE PROCEDURE EnviarSolicitudAmistad(
-    IN p_sender_id INT,
-    IN p_receiver_id INT
-)
-BEGIN
-    INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
-    VALUES (p_sender_id, p_receiver_id, 'pendiente');
-END //
-
--------------------------------------------------------------
 DELIMITER //
 
 CREATE PROCEDURE EnviarSolicitudAmistad(
@@ -79,14 +69,24 @@ CREATE PROCEDURE EnviarSolicitudAmistad(
     IN p_receiver_id INT
 )
 BEGIN
-    -- Insertar la solicitud de amistad con estado 'pendiente'
-    INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
-    VALUES (p_sender_id, p_receiver_id, 'pendiente');
+    DECLARE v_status VARCHAR(255);  -- Declarar variable para el estado de la solicitud
+
+    -- Verificar si ya existe una solicitud pendiente entre los usuarios
+    SELECT status INTO v_status
+    FROM Solicitudes_Amistad
+    WHERE (sender_id = p_sender_id AND receiver_id = p_receiver_id)
+       OR (sender_id = p_receiver_id AND receiver_id = p_sender_id);
+
+    -- Si no existe, insertar una nueva solicitud
+    IF v_status IS NULL THEN
+        INSERT INTO Solicitudes_Amistad (sender_id, receiver_id, status)
+        VALUES (p_sender_id, p_receiver_id, 'pendiente');
+    END IF;
 END //
 
 DELIMITER ;
 
-////////////////////////////////
+-- 5. Procedimiento almacenado para AceptarSolicitudAmistad
 
 DELIMITER //
 
@@ -119,7 +119,7 @@ END //
 
 DELIMITER ;
 
--------------------------------------------------------------
+
 
 -- 6. Procedimiento Almacenado para Comentar Mensaje
 CREATE PROCEDURE ComentarMensaje(
