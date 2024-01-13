@@ -125,10 +125,18 @@ public class FrmModulo_Buscaramigos extends javax.swing.JFrame {
 
             // Verifica que la acción se realice en la columna correcta (la de "Enviar Solicitud")
             if (columna == visibleColumn) {
-                // Obtiene los valores de sender_id y receiver_id desde la fila seleccionada
-                int senderId = Integer.parseInt(table.getValueAt(fila, /* índice de la columna sender_id */).toString());
-                int receiverId = Integer.parseInt(table.getValueAt(fila, /* índice de la columna receiver_id */).toString());
-
+                
+                // Obtener el valor del username del sender
+                String username = lbNombreUsuario.getText();
+                //Llamar al metodo de obtencion de ID por medio de username
+                int senderId = usuario.obtenerUserIdPorUsername(username);
+                
+                //Obtener el valor del username del receiver
+                Object receiverObj = tbResultados.getValueAt(0, 0);
+                String receiver = receiverObj.toString();
+                //Llamar al metodo de obtencion de ID por medio de username
+                int receiverId = usuario.obtenerUserIdPorUsername(receiver);
+                
                 // Llama al método para enviar la solicitud de amistad
                 boolean solicitudEnviada = usuario.enviarSolicitudAmistad(senderId, receiverId);
 
@@ -370,7 +378,15 @@ public class FrmModulo_Buscaramigos extends javax.swing.JFrame {
             new String [] {
                 "Username", "Nombre", "Apellido", "Acción"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(tbResultados);
 
         jLabel1.setFont(new java.awt.Font("Perpetua Titling MT", 2, 36)); // NOI18N

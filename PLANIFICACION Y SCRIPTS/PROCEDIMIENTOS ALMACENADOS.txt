@@ -8,12 +8,15 @@ CREATE PROCEDURE CrearUsuario(
     IN p_email VARCHAR(255),
     IN p_password VARCHAR(255),
     IN p_nombres VARCHAR(255),
-    IN p_apellidos VARCHAR(255)
+    IN p_apellidos VARCHAR(255),
+    IN p_intereses TEXT,
+    IN p_foto BLOB
 )
 BEGIN
-    INSERT INTO Usuarios (username, email, password, registration_date, nombre, apellido)
-    VALUES (p_username, p_email, p_password, NOW(), p_nombres, p_apellidos);
+    INSERT INTO Usuarios (username, email, password, registration_date, nombre, apellido, intereses, foto)
+    VALUES (p_username, p_email, p_password, NOW(), p_nombres, p_apellidos, p_intereses, p_foto);
 END //
+DELIMITER ;
 
 
 -- 2. Procedimiento Almacenado para Iniciar Sesión (APROBADO)
@@ -176,4 +179,20 @@ BEGIN
     END IF;
 END //
 
+--10. Procedimiento para obtener el ID del USER
+
+DELIMITER //
+
+CREATE PROCEDURE ObtenerUserIdPorUsername(
+    IN p_username VARCHAR(255),
+    OUT p_user_id INT
+)
+BEGIN
+    -- Buscar el user_id correspondiente al username dado
+    SELECT user_id INTO p_user_id
+    FROM Usuarios
+    WHERE username = p_username;
+END //
+
+DELIMITER ;
 

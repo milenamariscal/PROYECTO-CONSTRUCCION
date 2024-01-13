@@ -5,6 +5,16 @@
 package CapaPresentacion;
 
 import CapaNegocio.CN_Usuario;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -52,7 +62,7 @@ public class FrmRegistrodeusuario extends javax.swing.JFrame {
         lblFoto = new javax.swing.JLabel();
         btnSelecionarfoto = new javax.swing.JButton();
         lblIntereses = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnIngresar = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
         txtIntereses = new javax.swing.JTextField();
 
@@ -135,12 +145,22 @@ public class FrmRegistrodeusuario extends javax.swing.JFrame {
         lblFoto.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         btnSelecionarfoto.setText("Seleccionar foto ");
+        btnSelecionarfoto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelecionarfotoActionPerformed(evt);
+            }
+        });
 
         lblIntereses.setFont(new java.awt.Font("Segoe UI Emoji", 2, 14)); // NOI18N
         lblIntereses.setText("Intereses ");
 
-        jButton2.setFont(new java.awt.Font("Segoe UI Historic", 2, 18)); // NOI18N
-        jButton2.setText("Ingresar");
+        btnIngresar.setFont(new java.awt.Font("Segoe UI Historic", 2, 18)); // NOI18N
+        btnIngresar.setText("Ingresar");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarActionPerformed(evt);
+            }
+        });
 
         btnRegistrar.setText(" Registrar ");
         btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
@@ -162,7 +182,7 @@ public class FrmRegistrodeusuario extends javax.swing.JFrame {
                         .addGap(81, 81, 81)
                         .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(122, 122, 122)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,7 +269,7 @@ public class FrmRegistrodeusuario extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(49, 49, 49))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -275,23 +295,79 @@ public class FrmRegistrodeusuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        // Obtén los datos del usuario
         String nombre = txtNombre.getText();
         String apellido = txtApellido.getText();
         String password = txtContraseña.getText();
         String email = txtEmail.getText();
         String username = txtUsername.getText();
-        
-        try{
-            usuario.crearUsuario(nombre, apellido, password, email, username);
-        }catch (Exception ex){
-             // Mensaje de error
+        String intereses = txtIntereses.getText();
+
+        // Verifica que se haya cargado una foto
+        if (lblFoto.getIcon() == null) {
+            // Muestra un mensaje de error si no se cargó una foto
+            JOptionPane.showMessageDialog(null, "Por favor, carga una foto", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Obtén la foto desde el JLabel (puede ser necesario ajustar dependiendo de cómo estés manejando la foto)
+        ImageIcon fotoIcon = (ImageIcon) lblFoto.getIcon();
+
+        // Convierte el ImageIcon a un arreglo de bytes
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(new BufferedImage(fotoIcon.getImage().getWidth(null), fotoIcon.getImage().getHeight(null), BufferedImage.TYPE_INT_RGB), "jpg", baos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] fotoBytes = baos.toByteArray();
+
+        try {
+            // Llama al método para crear el usuario, pasando también la foto y los intereses
+            usuario.crearUsuario(nombre, apellido, password, email, username, intereses, fotoBytes);
+
+          
+        } catch (Exception ex) {
+            // Mensaje de error en caso de problemas al registrar el usuario
             JOptionPane.showMessageDialog(null, "Oops, algo salió mal. Error al registrar el usuario", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
+    
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void btnSelecionarfotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarfotoActionPerformed
+         // Abre el JFileChooser para seleccionar la foto
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
+
+        // Comprueba si se seleccionó un archivo
+        if (file != null) {
+            try {
+                // Convierte el archivo a un ImageIcon
+                ImageIcon icono = new ImageIcon(file.getPath());
+
+                // Escala la imagen para ajustarse al JLabel
+                Image imagen = icono.getImage();
+                Image nuevaImagen = imagen.getScaledInstance(lblFoto.getWidth(), lblFoto.getHeight(), Image.SCALE_SMOOTH);
+                ImageIcon imagenEscalada = new ImageIcon(nuevaImagen);
+
+                // Muestra la imagen en el JLabel
+                lblFoto.setIcon(imagenEscalada);
+            } catch (Exception ex) {
+                // Maneja cualquier excepción al cargar la foto
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_btnSelecionarfotoActionPerformed
+
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+        FrmLogin login = new FrmLogin();
+        login.setVisible(true);
+    }//GEN-LAST:event_btnIngresarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -330,9 +406,9 @@ public class FrmRegistrodeusuario extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnIngresar;
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnSelecionarfoto;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

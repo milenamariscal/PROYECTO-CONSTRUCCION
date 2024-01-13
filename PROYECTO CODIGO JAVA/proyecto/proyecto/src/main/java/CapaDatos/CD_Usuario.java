@@ -5,6 +5,7 @@
 package CapaDatos;
 
 
+import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,29 +24,23 @@ import javax.swing.JOptionPane;
  */
 public class CD_Usuario {
     
-    public void crearUsuario(String nombre, String apellido, String username, String email, String password) {
-        // Obtener una conexión a la base de datos
+    
+    public void crearUsuario(String nombre, String apellido, String username, String email, String password, String intereses, byte[] foto) {
         Connection conexion = ConexionBD.obtenerConexion();
-        
-        // Declarar un objeto PreparedStatement para ejecutar consultas preparadas
         PreparedStatement pst = null;
 
         try {
-            // Definir la consulta SQL con un procedimiento almacenado llamado "crearUsuario"
-            String sqlQuery = "CALL CrearUsuario(?, ?, ?, ?, ?)";
-            
-            // Preparar la consulta con la conexión establecida
+            String sqlQuery = "CALL CrearUsuario(?, ?, ?, ?, ?, ?, ?)";
             pst = conexion.prepareStatement(sqlQuery);
 
             // Asignarle los parámetros a la consulta
-            
             pst.setString(1, username);
             pst.setString(2, email);
             pst.setString(3, password);
             pst.setString(4, nombre);
             pst.setString(5, apellido);
-
-
+            pst.setString(6, intereses);
+            pst.setBytes(7, foto);
 
             // Ejecutar la llamada al procedimiento almacenado
             pst.executeUpdate();
@@ -62,7 +57,7 @@ public class CD_Usuario {
                 if (pst != null) {
                     pst.close();
                 }
-                
+
                 // Cerrar la conexión a la base de datos
                 ConexionBD.cerrarConexion();
 
@@ -332,6 +327,43 @@ public class CD_Usuario {
             }
         }
     }   
+    
+    public int obtenerUserIdPorUsername(String username) {
+        Connection conexion = ConexionBD.obtenerConexion();
+        CallableStatement cst = null;
+        int userId = -1; // Valor por defecto o indicador de error
+
+        try {
+            String sqlQuery = "{CALL ObtenerUserIdPorUsername(?, ?)}";
+            cst = conexion.prepareCall(sqlQuery);
+
+            // Asignarle los parámetros
+            cst.setString(1, username);
+            cst.registerOutParameter(2, java.sql.Types.INTEGER);
+
+            // Ejecutar la llamada al procedimiento almacenado
+            cst.execute();
+
+            // Obtener el user_id devuelto
+            userId = cst.getInt(2);
+
+            return userId;
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener el user_id: " + e.getMessage());
+            return userId;
+        } finally {
+            try {
+                if (cst != null) {
+                    cst.close();
+                }
+                ConexionBD.cerrarConexion();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
+    }   
+
     
 }
 

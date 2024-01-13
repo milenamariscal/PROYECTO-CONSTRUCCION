@@ -21,6 +21,9 @@ public class Principal {
         // Llamar al método insertarUsuario con valores de ejemplo
         //usuario.crearUsuario("milena_mariscal", "mileena@example.com", "password321",1);
         
+        FrmRegistrodeusuario registro = new FrmRegistrodeusuario();
+        registro.setVisible(true);
+        
         //Llamar al metodo LoginUsuario con valores de ejemplo
         //usuario.loginUsuario("john_doe", "password123");
         
@@ -51,8 +54,7 @@ public class Principal {
         //FrmLogin prueba = new FrmLogin();
         //prueba.setVisible(true);
         
-        FrmModulo_Buscaramigos prueba = new         FrmModulo_Buscaramigos();
-        prueba.setVisible(true);
+      
     
         
     }

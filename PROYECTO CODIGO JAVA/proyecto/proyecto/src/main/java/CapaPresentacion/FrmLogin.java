@@ -4,6 +4,7 @@
  */
 package CapaPresentacion;
 import CapaNegocio.CN_Usuario;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 /**
  *
@@ -175,20 +176,19 @@ public class FrmLogin extends javax.swing.JFrame {
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         String password = txtPassword.getText();
         String username = txtUsername.getText();
+    
+        try {
+            if (usuario.loginUsuario(username, password)) {
+                FrmModulo_Principal perfil = new FrmModulo_Principal(username); 
+                perfil.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Credenciales inválidas. Por favor, inténtelo de nuevo.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }catch (Exception ex) {
+            // Manejo de otras excepciones generales
+            JOptionPane.showMessageDialog(null, "Oops, algo salió mal. Error al iniciar sesión. Por favor, inténtelo de nuevo.", "Error", JOptionPane.ERROR_MESSAGE);
+        }  
         
-        try{
-            usuario.loginUsuario(username, password);
-            //FrmModulo_Principal perfil = new FrmModulo_Principal(username); 
-            //perfil.setVisible(true);
-            //Prueba
-            
-            FrmModulo_Buscaramigos prueba = new FrmModulo_Buscaramigos(username);
-            prueba.setVisible(true);
-            
-        }catch (Exception ex){
-             // Mensaje de error
-            JOptionPane.showMessageDialog(null, "Oops, algo salió mal. Error al inciar sesión", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     /**

@@ -4,14 +4,15 @@
  */
 package CapaNegocio;
 import CapaDatos.CD_Usuario;
-import java.util.List;
+import java.io.InputStream;
+
 
 /**
  *
  * @author Ena
  */
 public class CN_Usuario {
-       private CD_Usuario cdUsuario = new CD_Usuario();
+    private CD_Usuario cdUsuario = new CD_Usuario();
 
     // Atributos
     private int id;
@@ -21,11 +22,13 @@ public class CN_Usuario {
     private String password;
     private String mail;
     private char estado;
+    private String intereses;
+    private byte[] foto;
 
     // Constructor
     
     public CN_Usuario(){};
-    public CN_Usuario(String cedula, String nombre, String apellido, String username, String password, String mail, char estado) {
+    public CN_Usuario(String cedula, String nombre, String apellido, String username, String password, String mail, char estado, String intereses, byte[] foto) {
       
         this.nombre = nombre;
         this.apellido = apellido;
@@ -33,6 +36,8 @@ public class CN_Usuario {
         this.password = password;
         this.mail = mail;
         this.estado = estado;
+        this.intereses = intereses;
+        this.foto = foto;
     }
 
     // Métodos getter y setter para los atributos
@@ -93,16 +98,33 @@ public class CN_Usuario {
     public void setEstado(char estado) {
         this.estado = estado;
     }
+
+    public String getIntereses() {
+        return intereses;
+    }
+
+    public void setIntereses(String intereses) {
+        this.intereses = intereses;
+    }
+
+    public byte[] getFoto() {
+        return foto;
+    }
+
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
+    }
+
+ 
     
     //Llamado del metodo RegistrarUsuario
     
-    public void crearUsuario(String nombre, String apellido, String password, String email, String username){
-        cdUsuario.crearUsuario(nombre, apellido, username, email, password);
+    public void crearUsuario(String nombre, String apellido, String password, String email, String username, String intereses, byte[] foto){
+        cdUsuario.crearUsuario(nombre, apellido, username, email, password, intereses, foto);
     }
     
-    public void loginUsuario(String username, String password){
-        cdUsuario.loginUsuario(username, password);
-        
+    public boolean loginUsuario(String username, String password){
+       return cdUsuario.loginUsuario(username, password);
     }
     
     public String[] obtenerDatosUsuario(String inputUsername) {
@@ -111,6 +133,14 @@ public class CN_Usuario {
     
     public boolean enviarSolicitudAmistad(int senderId, int receiverId){
         return cdUsuario.enviarSolicitudAmistad(senderId, receiverId);
+    }
+    
+    public int obtenerUserIdPorUsername(String username){
+        return cdUsuario.obtenerUserIdPorUsername(username);
+    }
+    
+    public void publicarMensaje(int user_id, String content){
+        cdUsuario.publicarMensaje(user_id, content);
     }
      
      

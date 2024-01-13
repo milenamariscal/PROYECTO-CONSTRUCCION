@@ -4,7 +4,9 @@
  */
 package CapaPresentacion;
 
+import CapaNegocio.CN_Usuario;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -12,16 +14,24 @@ import java.awt.Color;
  * @author leona
  */
 public class FrmModulo_Publicarenperfil extends javax.swing.JFrame {
+    
+     CN_Usuario usuario = new CN_Usuario(); 
          
     /**
      * Creates new form FrmModulo_Principal
      */
-    public FrmModulo_Publicarenperfil() {
+    public FrmModulo_Publicarenperfil(String username) {
         initComponents();
-         this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
         
+        lbNombreUsuario.setText(username);
      
     }
+    
+    public FrmModulo_Publicarenperfil(){
+        
+    }
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,7 +47,7 @@ public class FrmModulo_Publicarenperfil extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         lblCargarfoto = new javax.swing.JLabel();
-        lblSubirfoto = new javax.swing.JLabel();
+        lbNombreUsuario = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -75,11 +85,10 @@ public class FrmModulo_Publicarenperfil extends javax.swing.JFrame {
         jPanel3.add(lblCargarfoto);
         lblCargarfoto.setBounds(60, 60, 180, 160);
 
-        lblSubirfoto.setFont(new java.awt.Font("Segoe UI Historic", 2, 18)); // NOI18N
-        lblSubirfoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblSubirfoto.setText("Foto de usuario ");
-        jPanel3.add(lblSubirfoto);
-        lblSubirfoto.setBounds(50, 20, 190, 30);
+        lbNombreUsuario.setFont(new java.awt.Font("Segoe UI Historic", 2, 18)); // NOI18N
+        lbNombreUsuario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel3.add(lbNombreUsuario);
+        lbNombreUsuario.setBounds(50, 20, 190, 30);
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
@@ -216,7 +225,7 @@ public class FrmModulo_Publicarenperfil extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -249,6 +258,11 @@ public class FrmModulo_Publicarenperfil extends javax.swing.JFrame {
         lblPublicacion.setText("Publicacion :");
 
         btnPublicar.setText("Publicar ");
+        btnPublicar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPublicarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -338,6 +352,22 @@ public class FrmModulo_Publicarenperfil extends javax.swing.JFrame {
     frmsalir.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void btnPublicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPublicarActionPerformed
+        String contenido = txtPublicar.getText();
+        String username = lbNombreUsuario.getText();
+        
+        //Llamar al metodo de obtencion de ID por medio de username
+        int idUser = usuario.obtenerUserIdPorUsername(username);
+
+        try{
+            usuario.publicarMensaje(idUser, contenido);
+            
+        }catch (Exception ex){
+             // Mensaje de error
+            JOptionPane.showMessageDialog(null, "Oops, algo salió mal. Error al publicar", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnPublicarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -408,9 +438,9 @@ public class FrmModulo_Publicarenperfil extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JLabel lbNombreUsuario;
     private javax.swing.JLabel lblCargarfoto;
     private javax.swing.JLabel lblPublicacion;
-    private javax.swing.JLabel lblSubirfoto;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTextArea txtPublicar;
     // End of variables declaration//GEN-END:variables

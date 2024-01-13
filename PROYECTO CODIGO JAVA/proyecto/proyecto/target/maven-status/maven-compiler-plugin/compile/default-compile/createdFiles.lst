@@ -25,6 +25,7 @@ CapaPresentacion\FrmModulo_Publicarenperfil$1.class
 CapaPresentacion\FrmSolicitudes.class
 CapaPresentacion\FrmModulo_Principal$3.class
 CapaPresentacion\FrmModulo_Solicitudes$5.class
+CapaPresentacion\FrmModulo_Publicarenperfil$8.class
 CapaPresentacion\FrmModulo_Principal$6.class
 CapaPresentacion\FrmModulo_Amigos$2.class
 CapaPresentacion\frmPublicar_Perfil$1.class
@@ -42,6 +43,7 @@ CapaPresentacion\FrmModulo_Buscaramigos$3.class
 CapaPresentacion\FrmBuscarAmigos$1.class
 CapaPresentacion\FrmModulo_Amigos$6.class
 CapaPresentacion\FrmModulo_Solicitudes$4.class
+CapaPresentacion\FrmRegistrodeusuario$4.class
 CapaPresentacion\FrmModulo_Principal$2.class
 CapaPresentacion\FrmRegistrodeusuario$1.class
 CapaPresentacion\FrmModulo_Publicarenperfil$7.class
@@ -49,6 +51,7 @@ CapaPresentacion\FrmModulo_Buscaramigos$ButtonColumn.class
 CapaPresentacion\FrmModulo_Publicarenperfil.class
 CapaPresentacion\FrmModulo_Solicitudes$1.class
 CapaPresentacion\FrmBuscarAmigos$2.class
+CapaPresentacion\FrmModulo_Buscaramigos$9.class
 CapaPresentacion\FrmRegistrodeusuario$2.class
 CapaPresentacion\FrmModulo_Buscaramigos$2.class
 CapaPresentacion\FrmModulo_Solicitudes.class
@@ -65,3 +68,4 @@ CapaDatos\Principal.class
 CapaPresentacion\FrmModulo_Publicarenperfil$6.class
 CapaPresentacion\FrmModulo_Amigos$7.class
 CapaPresentacion\FrmModulo_Publicarenperfil$3.class
+CapaPresentacion\FrmRegistrodeusuario$5.class

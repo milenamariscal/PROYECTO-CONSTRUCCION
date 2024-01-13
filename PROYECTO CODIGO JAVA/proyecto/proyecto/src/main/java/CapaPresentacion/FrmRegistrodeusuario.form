@@ -144,7 +144,7 @@
                               <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
                               <Component id="btnRegistrar" min="-2" pref="176" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="122" max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" pref="174" max="-2" attributes="0"/>
+                              <Component id="btnIngresar" min="-2" pref="174" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -257,7 +257,7 @@
                               <EmptySpace pref="56" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnRegistrar" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
-                                  <Component id="jButton2" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
+                                  <Component id="btnIngresar" alignment="3" min="-2" pref="53" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                           </Group>
@@ -359,6 +359,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Seleccionar foto "/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSelecionarfotoActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblIntereses">
               <Properties>
@@ -368,13 +371,16 @@
                 <Property name="text" type="java.lang.String" value="Intereses "/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton2">
+            <Component class="javax.swing.JButton" name="btnIngresar">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI Historic" size="18" style="2"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Ingresar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnIngresarActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnRegistrar">
               <Properties>
